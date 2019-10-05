@@ -1,6 +1,7 @@
 package token;
 
 import exceptions.ParserException;
+import language.Terminal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,38 +15,38 @@ import java.util.regex.Pattern;
  * @version 1.0
  */
 
-public class Tokenizer {
+public class Scanner {
 
     /**
-     * Private nested Class/Struct to hold the regex and tag values
+     * Private nested Class/Struct to hold the regex and terminal values
      *
      * @author Raphael Hungria
      * @version 1.0
      */
     private class TokenInfo {
         public Pattern regex;
-        public final Tag tag;
+        public final Terminal terminal;
 
         /**
          * Simple constructor to set the values
          *
          * @param regex REGEX string
-         * @param tag Tag (ENUM) to be associated to the regex
+         * @param terminal Terminal (ENUM) to be associated to the regex
          */
-        private TokenInfo(Pattern regex, Tag tag)
+        private TokenInfo(Pattern regex, Terminal terminal)
         {
             this.regex = regex;
-            this.tag = tag;
+            this.terminal = terminal;
         }
     }
 
     //Singleton Design Pattern (not regex Pattern)
-    //Tokenizer should be a singleton since it only exists to manage the existing Patterns and Tags
-    private static Tokenizer instance = null;
-    public static Tokenizer getInstance()
+    //Scanner should be a singleton since it only exists to manage the existing Patterns and Tags
+    private static Scanner instance = null;
+    public static Scanner getInstance()
     {
         if (instance == null)
-            instance = new Tokenizer();
+            instance = new Scanner();
         return instance;
     }
 
@@ -57,7 +58,7 @@ public class Tokenizer {
     /**
      * Initializes the Lists for Tokens and TokenInfos
      */
-    public Tokenizer() {
+    public Scanner() {
         this.tokenInfos = new ArrayList<>();
         this.tokens = new ArrayList<>();
     }
@@ -66,14 +67,14 @@ public class Tokenizer {
      * Function to be called on setup to store all REGEX to be (eventually) read from an external file
      *
      * @param regex
-     * @param tag
+     * @param terminal
      */
-    public void add(String regex, Tag tag)
+    public void add(String regex, Terminal terminal)
     {
         tokenInfos.add(
                 new TokenInfo(
                         Pattern.compile("^("+ regex +")"),
-                        tag
+                        terminal
                 )
         );
     }
@@ -85,7 +86,7 @@ public class Tokenizer {
      * @throws  ParserException throws if it finds and unrecognized expression
      * @see ParserException
      */
-    public void tokenize(String input_str)
+    public void scan(String input_str) throws ParserException
     {
         String matcher_input_str = new String(input_str);
         Matcher attempter;
@@ -102,8 +103,8 @@ public class Tokenizer {
                 if (attempter.find()){
                     match = true;
 
-                    //add the Token with the apropriate tag and lexeme
-                    tokens.add(new Token(info.tag, attempter.group().trim()));
+                    //add the Token with the apropriate terminal and lexeme
+                    tokens.add(new Token(info.terminal, attempter.group().trim()));
 
                     matcher_input_str = attempter.replaceFirst("");
                     break;
@@ -115,4 +116,11 @@ public class Tokenizer {
         }
     }
 
+    /**
+     * Getter for all the tokens stored, should be called after every scan, since it clears the list
+     * @return tokens
+     */
+    public List<Token> getTokens() {
+        return tokens;
+    }
 }

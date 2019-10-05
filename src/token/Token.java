@@ -1,12 +1,20 @@
 package token;
 
+import language.Terminal;
+
+/**
+ * Simple base Token class to be thrown to Syntax Analysis
+ *
+ * @author Raphael Hungria
+ * @version 1.0
+ */
 public class Token
 {
-    public final Tag tag;
+    public final Terminal terminal;
     public final String lexeme;
 
-    public Token(Tag tag, String lexeme) {
-        this.tag = tag;
+    public Token(Terminal terminal, String lexeme) {
+        this.terminal = terminal;
         this.lexeme = lexeme;
     }
 }
