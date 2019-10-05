@@ -1,0 +1,5 @@
+S ::= EXPR;
+EXPR ::= SUM
+SUM ::= SUM SUM_OPR TERM | SUM MINUS_OPR TERM | TERM
+TERM ::= TERM MULT_OPR TERM | TERM DIV_OPR TERM | FACTOR
+FACTOR ::= l_parenthesis EXPR r_parenthesis | number | id

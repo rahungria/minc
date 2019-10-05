@@ -7,14 +7,15 @@ package language;
  * @version 1.0
  */
 public enum Terminal {
-    EOF,
-    EPSILON,
-    EOL,
-    WS,
-    NUMBER,
-    L_PARENTHESIS,
-    R_PARENTHESIS,
-    SUM_OPERATOR,
-    MINUS_OPERATOR,
-    MULT_OPERATOR
+    eof,
+    epsilon,
+    eol,
+    ws,
+    number,
+    l_parenthesis,
+    r_parenthesis,
+    sum_opr,
+    minus_opr,
+    mult_opr,
+    div_opr
 }

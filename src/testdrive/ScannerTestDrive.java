@@ -9,13 +9,14 @@ public class ScannerTestDrive {
 
     public static void main(String[] args) {
         Scanner scanner = Scanner.getInstance();
-        scanner.add("[\\n|\\ |\\t]", Terminal.WS); //add whitespace to tokens list
-        scanner.add("\\(", Terminal.L_PARENTHESIS);
-        scanner.add("\\)", Terminal.R_PARENTHESIS);
-        scanner.add("[0-9]+", Terminal.NUMBER);
-        scanner.add("\\+", Terminal.SUM_OPERATOR);
-        scanner.add("\\-", Terminal.MINUS_OPERATOR);
-        scanner.add("\\*", Terminal.MULT_OPERATOR);
+        scanner.add("[\\n|\\ |\\t]", Terminal.ws); //add whitespace to tokens list
+        scanner.add("\\(", Terminal.l_parenthesis);
+        scanner.add("\\)", Terminal.r_parenthesis);
+        scanner.add("[0-9]+", Terminal.number);
+        scanner.add("\\+", Terminal.sum_opr);
+        scanner.add("\\-", Terminal.minus_opr);
+        scanner.add("\\*", Terminal.mult_opr);
+        scanner.add("\\;", Terminal.eol);
 
 
 
