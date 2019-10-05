@@ -1,5 +1,6 @@
 package language;
 
+import exceptions.GrammarCompilerNotInstanciatedException;
 import exceptions.InvalidGrammarException;
 import exceptions.InvalidGrammarFileExtension;
 
@@ -15,31 +16,36 @@ import java.util.regex.Pattern;
  * @author Raphael Hungria
  * @version 1.0
  */
-public class Grammar_Compiler {
+public class GrammarCompiler {
 
     private File grammar_file;
     public java.util.Scanner scanner;
     private Pattern id_ptrn;
     private Pattern rule_ptrn;
     //Singleton pattern
-    private static Grammar_Compiler instance = null;
-    public static Grammar_Compiler getInstance(String grammar_file_path){
+    private static GrammarCompiler instance = null;
+    public static GrammarCompiler getInstance(String grammar_file_path){
         if (instance == null)
-            instance = new Grammar_Compiler(grammar_file_path);
+            instance = new GrammarCompiler(grammar_file_path);
+        return instance;
+    }
+    public static GrammarCompiler getInstance() throws GrammarCompilerNotInstanciatedException{
+        if (instance == null)
+            throw new GrammarCompilerNotInstanciatedException("Singleton doesn't yet exist, use the other function signature with the appropriate path");
         return instance;
     }
 
     /**
      * Hashtable with each Non-Terminal and respective List of rules
      */
-    public Hashtable<String, List<String>> non_terminal_rules;
-    public Set<String> non_terminals;
+    private Hashtable<String, List<String>> non_terminal_rules;
+    private Set<String> non_terminals;
 
     /**
      * Constructor recieves the path to the file containing the type 2 grammar defined with EBNF syntax
      * @param grammar_file_path path to the grammar file (must have .grammar extension)
      */
-    private Grammar_Compiler(String grammar_file_path) {
+    private GrammarCompiler(String grammar_file_path) {
         try {
             if (!grammar_file_path.endsWith(".grammar"))
                 throw new InvalidGrammarFileExtension("Grammar File mustt have .grammar extension");
@@ -102,6 +108,12 @@ public class Grammar_Compiler {
             }
         }
         non_terminals = non_terminal_rules.keySet();
+    }
 
+    public Set<String> getNon_terminals() {
+        return non_terminals;
+    }
+    public Hashtable<String, List<String>> getNon_terminal_rules() {
+        return non_terminal_rules;
     }
 }

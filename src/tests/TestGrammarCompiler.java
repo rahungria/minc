@@ -1,12 +1,12 @@
-package testdrive;
+package tests;
 
 import exceptions.InvalidGrammarException;
-import language.Grammar_Compiler;
+import language.GrammarCompiler;
 
-public class Non_Terminal_Builder_TestDrive {
+public class TestGrammarCompiler {
 
     public static void main(String[] args) {
-        Grammar_Compiler ntb = Grammar_Compiler.getInstance("./grammar/cfg.grammar");
+        GrammarCompiler ntb = GrammarCompiler.getInstance("./grammar/minc.grammar");
 
         while(ntb.scanner.hasNextLine()){
             try {
