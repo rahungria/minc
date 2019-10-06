@@ -9,8 +9,9 @@ package language;
 public enum Terminal {
     eof("TEMP1"),//STIL NOT SURE WHAT WOULD FIT
     epsilon("TEMP2"),//ALSO NOT REALLY SURE
+    id("TEMP3"),
     eol("\\;"),
-    ws("\\s"),
+    ws("\\s+"),
     integer("\\d+"),
     //real("-?\\d+\\.\\d+(?:[Ee][+-]?\\d+)?"),
     l_parenthesis("\\("),

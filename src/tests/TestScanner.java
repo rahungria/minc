@@ -1,6 +1,6 @@
 package tests;
 
-import exceptions.ParserException;
+import exceptions.ScannerException;
 import token.Scanner;
 import token.Token;
 
@@ -19,22 +19,26 @@ public class TestScanner {
         scanner.add("\\;", Terminal.eol);
         */
 
-        scanner.build_terminals();
+        //scanner.build_terminals();
 
 
         System.out.println(scanner.terminals);
 
 
         try {
-            scanner.scan("(20 + 3) * (11 - 1)");
+            scanner.scan("(20               + 3) * (11 - 1)");
+
+            System.out.println(scanner.nextToken());
 
             for (Token token : scanner.getTokens()) {
-                System.out.println(String.format("%-20s%-5s", token.terminal, token.lexeme));
+                System.out.println(String.format("%-20s:%25s", token.terminal, token.lexeme));
+                //System.out.println(String.format("%-20s%25s\n%-20s%25s\n", "TERMINAL:", token.terminal, "LEXEME:", token.lexeme));
             }
         }
-        catch (ParserException exc){
+        catch (ScannerException exc){
             System.out.println(exc.getMessage());
             exc.printStackTrace();
         }
+
     }
 }

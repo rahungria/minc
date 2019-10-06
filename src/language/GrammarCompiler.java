@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * READ-ME
@@ -36,9 +37,9 @@ public class GrammarCompiler {
     }
 
     /**
-     * Hashtable with each Non-Terminal and respective List of rules
+     * Hashtable matching each non-terminal with a list of stacks of
      */
-    private Hashtable<String, List<String>> non_terminal_rules;
+    private Hashtable<String, List<List<String>>> non_terminal_rules;
     private Set<String> non_terminals;
 
     /**
@@ -47,12 +48,34 @@ public class GrammarCompiler {
      */
     private GrammarCompiler(String grammar_file_path) {
         try {
+
             if (!grammar_file_path.endsWith(".grammar"))
                 throw new InvalidGrammarFileExtension("Grammar File mustt have .grammar extension");
+
             non_terminal_rules = new Hashtable<>();
-            non_terminals= new HashSet<>();
+            non_terminals= new LinkedHashSet<>();
             grammar_file = new File(grammar_file_path);
             scanner = new java.util.Scanner(grammar_file);
+
+            //Patterns to recognize the Non-Terminals and their rules acording to EBNF syntax
+            id_ptrn = Pattern.compile("(?<id>[A-Z'_]+)(?:\\s*::=\\s*)");
+            rule_ptrn = Pattern.compile("(?:\\|\\s*)?(?<rule>[a-zA-Z][a-zA-Z_'\\s]*)");
+
+            compile_grammar();
+
+//            //DEBUG CONSOLE OUTPUT
+//            System.out.println("DEBUG RULES");
+//            System.out.println(non_terminals);
+//            System.out.println(non_terminal_rules);
+//            for(String nt : non_terminals){
+//                System.out.println(nt + ":");
+//                System.out.println("\t" + non_terminal_rules.get(nt) + non_terminal_rules.get(nt).size());
+//                for(Stack<String> stack : non_terminal_rules.get(nt)){
+//                    for(String str3 : stack){
+//                        System.out.println(String.format("%10s:%20","Rule:",str3));
+//                    }
+//                }
+//            }
         }
         catch (FileNotFoundException e) {
             System.out.println("Grammar File Not Found!");
@@ -62,45 +85,57 @@ public class GrammarCompiler {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-
-        //Patterns to recognize the Non-Terminals and their rules acording to EBNF syntax
-        id_ptrn = Pattern.compile("(?<id>[A-Z'_]+)(?:\\s*::=\\s*)");
-        rule_ptrn = Pattern.compile("(?:\\|\\s*)?(?<rule>[a-zA-Z][a-zA-Z_'\\s]*);?");
+        catch (PatternSyntaxException e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
+    /**
+     *Analyses a single line from the grammar file and builds and updates the Rules and Non-Terminals
+     *
+     * @param input One line from the .grammar file
+     * @throws InvalidGrammarException the grammar isn't recognized by the defined regexes
+     */
     public void build(String input) throws InvalidGrammarException{
 
         String matcher_input_string = new String(input);
         boolean matched = false;
         Matcher matcher;
         String id;
-        List<String> rules = new ArrayList<>();
+        List<List<String>> rules = new ArrayList<>();
 
         while (!matcher_input_string.equals("")){
+
             matched = false;
             matcher = id_ptrn.matcher(matcher_input_string);
 
-            //debug print (uncomment to see the language being defined
             if(matcher.find()){
                 id = matcher.group("id").trim();
-                //System.out.println(String.format("id:%15s", id));
                 matcher_input_string = matcher.replaceFirst("");
 
                 matcher = rule_ptrn.matcher(matcher_input_string);
 
                 while (matcher.find()){
-                    rules.add(matcher.group("rule").trim());
-                    //System.out.println(String.format("%20s%40s", "rule:", "<"+matcher.group("rule").trim()+">"));
+                    List<String> individual_rules = Arrays.asList(matcher.group("rule").trim().split("\\s+"));
+                    rules.add(individual_rules);
+
+//                    //DEBUG ON GRAMMAR GENERATION ON CONSOLE
+//
+//                    System.out.println("id:\t" + id);
+//                    for (String str : individual_rules)
+//                        System.out.println(String.format("%9s%20s", "rule:", '<' + str + '>'));
+
+                    //Progress matcher entry
                     matcher_input_string = matcher.replaceFirst("");
                     matcher = rule_ptrn.matcher(matcher_input_string);
                 }
-                //System.out.println();
+
                 matched = true;
 
                 non_terminal_rules.put(id, rules);
 
-                //id = "";
-                rules.clear();
+                //rules.clear(); IDIOTAAAAA PQ VC POS ISSOOO AAAAAH VO DEIXA SO PRA VC NAO ESQUECER O QUAO JAO VC EHH
             }
 
             if (!matched){
@@ -110,10 +145,27 @@ public class GrammarCompiler {
         non_terminals = non_terminal_rules.keySet();
     }
 
-    public Set<String> getNon_terminals() {
+    //VALIDATE GRAMMAR / EVERY NON-TERMINAL AFTER BUILDING!! (WIP)
+
+    public final Set<String> getNon_terminals() {
         return non_terminals;
     }
-    public Hashtable<String, List<String>> getNon_terminal_rules() {
+    public final Hashtable<String, List<List<String>>> getNon_terminal_rules() {
         return non_terminal_rules;
     }
+
+    private void compile_grammar(){
+        while(scanner.hasNextLine()){
+            try {
+                String nl = scanner.nextLine();
+                build(nl);
+                System.out.println(nl + "\n");
+            }
+            catch (InvalidGrammarException e){
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

@@ -1,12 +1,9 @@
 package token;
 
-import exceptions.ParserException;
+import exceptions.ScannerException;
 import language.Terminal;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,14 +57,15 @@ public class Scanner {
 
     //List of all available REGEX
     public Set<TokenInfo> terminals;
-    private List<Token> tokens;
+    private Queue<Token> tokens;
 
     /**
      * Initializes the Lists for Tokens and TokenInfos
      */
     private Scanner() {
         this.terminals = new HashSet<>();
-        this.tokens = new ArrayList<>();
+        this.tokens = new ArrayDeque<>();
+        build_terminals();
     }
 
     /*
@@ -84,7 +82,7 @@ public class Scanner {
     /**
      * Automatically goes through Terminal ENUM and build the set for it (eventually will read from file)
      */
-    public void build_terminals(){
+    private void build_terminals(){
         for (Terminal terminal : Terminal.values()){
             terminals.add(
                     new TokenInfo(
@@ -98,11 +96,12 @@ public class Scanner {
      * Receives a input String and matches and creates Tokens for all matches according to the defined REGEX in tokeninfos.
      *
      * @param input_str input string to be matched
-     * @throws  ParserException throws if it finds and unrecognized expression
-     * @see ParserException
+     * @throws ScannerException throws if it finds and unrecognized expression
+     * @see ScannerException
      */
-    public void scan(String input_str) throws ParserException
+    public void scan(String input_str) throws ScannerException
     {
+        tokens.clear();
         String matcher_input_str = input_str;
         Matcher attempter;
         boolean match;
@@ -127,15 +126,38 @@ public class Scanner {
             }
 
             if (!match)
-                throw new ParserException("Unexpected Character in: ->" + matcher_input_str);
+                throw new ScannerException("Unexpected Character in: ->" + matcher_input_str);
         }
+
+        //drop all whitespaces
+        dropIgnoredTokens(Arrays.asList(Terminal.ws));
     }
 
     /**
      * Getter for all the tokens stored, should be called after every scan, since it clears the list
      * @return tokens
      */
-    public List<Token> getTokens() {
+    public Queue<Token> getTokens() {
         return tokens;
+    }
+
+    /**
+     * function to get the next token to be analised by the Parser, currently work left-to-right (queue), right-to-left implemention would require Stack behaviour
+     * @return the next token since the last scan (FIFO)
+     */
+    public Token nextToken(){
+        return tokens.remove();
+    }
+
+    private void dropIgnoredTokens(List<Terminal> terminals){
+        Iterator<Token> iter = tokens.iterator();
+
+        while (iter.hasNext()){
+            for (Terminal term : terminals){
+                if (iter.next().terminal == term){
+                    iter.remove();
+                }
+            }
+        }
     }
 }

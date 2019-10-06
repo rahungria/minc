@@ -4,4 +4,4 @@ SUM ::= TERM SUM'
 SUM' ::= sum_opr TERM SUM' | minus_opr TERM SUM' | epsilon
 TERM ::= FACTOR TERM'
 TERM' ::= mult_opr FACTOR TERM' | div_opr FACTOR TERM' | epsilon
-FACTOR ::= l_parenthesis EXPR r_parenthesis | number | id
+FACTOR ::= l_parenthesis EXPR r_parenthesis | integer | id

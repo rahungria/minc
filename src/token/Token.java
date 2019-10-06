@@ -17,4 +17,9 @@ public class Token
         this.terminal = terminal;
         this.lexeme = lexeme;
     }
+
+    @Override
+    public String toString() {
+        return String.format("{%s:\t%s}\n", terminal, lexeme);
+    }
 }

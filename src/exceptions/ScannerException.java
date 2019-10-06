@@ -10,9 +10,9 @@ import token.Scanner;
  * @author Raphael Hungria
  * @version 1.0
  */
-public class ParserException extends Exception {
+public class ScannerException extends Exception {
 
-    public ParserException(String message) {
+    public ScannerException(String message) {
         super(message);
     }
 }
