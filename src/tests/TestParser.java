@@ -14,7 +14,7 @@ public class TestParser {
         try {
             System.out.println("Scaning...");
 
-            scanner.scan("(1 + 2);");
+            scanner.scan("1 + 2;");
 
         } catch (ScannerException e) {
             e.printStackTrace();

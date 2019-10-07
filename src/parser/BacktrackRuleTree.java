@@ -3,6 +3,7 @@ package parser;
 import sun.reflect.generics.tree.Tree;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BacktrackRuleTree<T> {
@@ -52,11 +53,10 @@ public class BacktrackRuleTree<T> {
     }
 
     /**
-     * Drops all children and returns the parent node.
-     * Used when the Parser matches a terminal
-     * @return
+     * Drops the Entire tree calling this method and return the parent
+     * @return parent of the tree that called
      */
-    public BacktrackRuleTree<T> pop_all_children() {
+    public BacktrackRuleTree<T> drop_tree() {
         this.parent.child = null;
         return this.parent;
     }

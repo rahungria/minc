@@ -129,6 +129,7 @@ public class Scanner {
                 throw new ScannerException("Unexpected Character in: ->" + matcher_input_str);
         }
 
+        tokens.add(new Token(Terminal.eof, ""));
         //drop all whitespaces
         dropIgnoredTokens(Arrays.asList(Terminal.ws));
     }

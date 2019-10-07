@@ -6,7 +6,6 @@ import language.Terminal;
 import token.Scanner;
 import token.Token;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Parser {
@@ -103,23 +102,29 @@ public class Parser {
             else if(focus.alphabet_element.equals(word.terminal.name())){
 
                 System.out.println("Focus matches the Word! >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                //System.out.println("\n\nPRINTING RULE TREE:\n");
-                //System.out.println(brtRoot.tree_info());
-                //System.out.println("focusCBT:\n" + focusBRT.tree_info());
                 System.out.println(String.format("%-20s%40s","Tokens:",scanner.getTokens()));
-                focusBRT = focusBRT.pop_all_children();
+
+                focusBRT = move_up_and_drop_rules(focusBRT);
+
                 word = scanner.nextToken();
                 focus = new CST(non_terminals_stack.pop());
                 System.out.println(String.format("%-20s%40s","New Tokens:",scanner.getTokens()));
             }
             //matches Epsilon element of the language
             //THE ONLY HARD CODE I'LL ALLOW MYSELF
-
             else if (focus.alphabet_element.equals(Terminal.epsilon.name())){
 
                 System.out.println("EPSILON detected...\nAdvancing Parser without advancing token...");
-                focusBRT = focusBRT.pop_all_children();
-                focus = new CST(non_terminals_stack.pop());
+//                focusBRT = focusBRT.drop_tree();
+                focusBRT = move_up_and_drop_rules(focusBRT);
+//                if (focusBRT.rule.size() == 0)
+//                    focusBRT = focusBRT.parent;
+
+                String new_focus_rule = non_terminals_stack.pop();
+                focus = new CST(new_focus_rule);
+                focusBRT.addRules(non_terminal_rules.get(new_focus_rule));
+                System.out.println("DEBUG FOCUS CBT:\n" + focusBRT.tree_info());
+
             }
             //Detect Input Acceptance (actual token = eof and focus is empty)
             else if (word.terminal == Terminal.eof && focus == null){
@@ -143,8 +148,25 @@ public class Parser {
                 //backtrack
             }
             System.out.println("\n");
+            System.out.println("DEBUG RULE TREE:\n");
+            System.out.println(brtRoot.tree_info());
+            System.out.println("FOCUS RULE:\t" + focusBRT.rule);
+            System.out.println();
             loopcount++;
         }
         return null;
+    }
+
+    private BacktrackRuleTree move_up_and_drop_rules(BacktrackRuleTree<List<String>> focusBRT){
+        focusBRT = focusBRT.drop_tree();
+        List<String> temp = new ArrayList<>(focusBRT.rule);
+        if (temp.size() > 0)
+            temp.remove(0);
+        while (focusBRT.rule.size() == 0){
+            focusBRT = focusBRT.drop_tree();
+        }
+
+        focusBRT.rule = temp;
+        return focusBRT;
     }
 }
