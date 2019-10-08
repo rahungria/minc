@@ -1,11 +1,15 @@
 package parser;
 
-import sun.reflect.generics.tree.Tree;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+/**
+ * Tree that tracks the used and unused rules to attempt to implement a backtracking mechanism
+ *
+ * @param <T> Type of the Rule -> List<String> in all cases.
+ * @deprecated no longer suported, replaced by RuleStack
+ * @see RuleStack
+ */
 public class BacktrackRuleTree<T> {
 
     public BacktrackRuleTree<T> parent;
