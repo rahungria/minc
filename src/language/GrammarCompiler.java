@@ -151,7 +151,7 @@ public class GrammarCompiler {
         return non_terminals;
     }
     public final Hashtable<String, List<List<String>>> getNon_terminal_rules() {
-        return non_terminal_rules;
+        return Collections.unmodifiableMap(non_terminal_rules);
     }
 
     private void compile_grammar(){
