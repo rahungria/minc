@@ -57,7 +57,7 @@ public class GrammarCompiler {
             grammar_file = new File(grammar_file_path);
             scanner = new java.util.Scanner(grammar_file);
 
-            //Patterns to recognize the Non-Terminals and their rules acording to EBNF syntax
+            //Patterns to recognize the Non-Terminals and their rules acording to BNF syntax
             id_ptrn = Pattern.compile("(?<id>[A-Z'_]+)(?:\\s*::=\\s*)");
             rule_ptrn = Pattern.compile("(?:\\|\\s*)?(?<rule>[a-zA-Z][a-zA-Z_'\\s]*)");
 

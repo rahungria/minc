@@ -14,7 +14,7 @@ public class TestParser {
         try {
             System.out.println("Scaning...");
 
-            scanner.scan("1 + + 2;");
+            scanner.scan("(1*2) - 2 * 1 - 1");
 
         } catch (ScannerException e) {
             e.printStackTrace();
@@ -32,7 +32,13 @@ public class TestParser {
         System.out.println("Begin Parsing...");
         System.out.println(scanner.getTokens());
 
-        CST tree = parser.parse();
+        try {
+            CST tree = parser.parse();
+        } catch (Exception e) {
+            System.out.println("FAILED PARSING!!");
+            e.printStackTrace();
+            System.out.println("ZOEY MAMA");
+        }
 
         System.out.println("Parsing Ended!");
     }

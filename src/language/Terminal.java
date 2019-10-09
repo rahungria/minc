@@ -7,10 +7,11 @@ package language;
  * @version 1.0
  */
 public enum Terminal {
-    eof("TEMP1"),//STIL NOT SURE WHAT WOULD FIT
+    //eof("TEMP1"),//STIL NOT SURE WHAT WOULD FIT
     epsilon("TEMP2"),//ALSO NOT REALLY SURE
     id("TEMP3"),
-    eol("\\;"),
+    semi_collon("\\;"),
+    eol("TEMP!!"),
     ws("\\s+"),
     integer("\\d+"),
     //real("-?\\d+\\.\\d+(?:[Ee][+-]?\\d+)?"),

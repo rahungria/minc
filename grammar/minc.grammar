@@ -1,4 +1,4 @@
-S ::= EXPR eol
+S ::= EXPR semi_collon
 EXPR ::= SUM
 SUM ::= TERM SUM'
 SUM' ::= sum_opr TERM SUM' | minus_opr TERM SUM' | epsilon

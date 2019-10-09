@@ -121,7 +121,6 @@ public class Scanner {
             }
         }
 
-        tokens.add(new Token(Terminal.eof, ""));
         //drop all whitespaces
         dropIgnoredTokens(Arrays.asList(Terminal.ws));
     }

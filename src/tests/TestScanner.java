@@ -16,7 +16,7 @@ public class TestScanner {
         scanner.add("\\+", Terminal.sum_opr);
         scanner.add("\\-", Terminal.minus_opr);
         scanner.add("\\*", Terminal.mult_opr);
-        scanner.add("\\;", Terminal.eol);
+        scanner.add("\\;", Terminal.semi_collon);
         */
 
         //scanner.build_terminals();
