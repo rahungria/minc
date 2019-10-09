@@ -17,9 +17,14 @@ public class Token
         this.terminal = terminal;
         this.lexeme = lexeme;
     }
+    public Token(Token copy) {
+        this.terminal = copy.terminal;
+        this.lexeme = copy.lexeme;
+    }
+
 
     @Override
     public String toString() {
-        return String.format("{%s:\t%s}\n", terminal, lexeme);
+        return String.format("(%s,%s)", terminal, lexeme);
     }
 }

@@ -43,16 +43,18 @@ public class Parser {
         Stack<RuleObj> memoryStack = new Stack<>();
         Stack<RuleObj> focus = new Stack<>();
 
+        non_terminals_stack.push(new RuleObj(Terminal.eof.name(),gc));
         focus.push(new RuleObj(root.alphabet_element, gc));
 
         int loopcount = 0;
         int rule_size = 0;
 
-        while(loopcount < 50){
+        while(true){
 
 
             //DEBUG CONSOLE LOG
             System.out.println("loop " + loopcount);
+            System.out.println("TOKENS:\t" + scanner.getTokens());
             for (int i =0; i < 100; i++)
                 System.out.print('-');
             System.out.println();
@@ -66,7 +68,6 @@ public class Parser {
             for (int i =0; i < 100; i++)
                 System.out.print('-');
             System.out.println();
-
             //END OF DEBUG CONSOLE LOG
 
 
@@ -116,6 +117,8 @@ public class Parser {
                 //push head of stack into memory
                 memoryStack.push(non_terminals_stack.pop());
 
+                //define that the head of memory has popped a token
+                memoryStack.peek().popped_word = true;
                 //current rule becomes the next rule from the head of the memory
                 current_rule = memoryStack.peek().pop_rule();
 
@@ -124,6 +127,15 @@ public class Parser {
                 for (int i = rule_size - 1; i >= 0; i--){
                     non_terminals_stack.push(new RuleObj(current_rule.get(i), gc));
                 }
+//                System.out.println(String.format("%-20s%80s","Focus:", focus));
+//                System.out.println(String.format("%-20s%80s", "Stack:", non_terminals_stack));
+//                System.out.println(String.format("%-20s%80s", "Memory:", memoryStack));
+//                System.out.println(String.format("%-20s%80s", "Word:", word.terminal.name() + "(" + word.lexeme + ")"));
+//                System.out.println(String.format("%-20s%80s", "Current Rule:", current_rule));
+
+                if (non_terminals_stack.size() == 0 && word.terminal.name().equals(Terminal.eof.name()) && memoryStack.peek().alphabet_member.equals(Terminal.eof.name()))
+                    break;
+
                 //update focus from head of stack
                 focus.push(non_terminals_stack.pop());
             }
@@ -140,11 +152,6 @@ public class Parser {
                 focus.push(non_terminals_stack.pop());
             }
             //Detect Input Acceptance (actual token = eof and focus is empty)
-            else if (word.terminal == Terminal.eof && non_terminals_stack.size() == 0){
-
-                System.out.println("ACCEPTED INPUT! POGGERS!!\n");
-                return root;
-            }
             else{
                 System.out.println("\n!!!!!!!!!!RULE FAILED!!!!!!!!!!\nBACKTRACKING...");
 
@@ -155,6 +162,17 @@ public class Parser {
                 for (int i = 0; i < rule_size; i++)
                     non_terminals_stack.pop();
 
+                //drop all the elements from the memory that have run out of rules
+                while(memoryStack.peek().rules.size() == 0){
+                    //If the rule on the memory that was called to backtrack has accepted an input and popped a token,
+                    //then restore the token onto the Token Queue
+                    if (memoryStack.peek().popped_word)
+                        scanner.restore_token();
+                    memoryStack.pop();
+                }
+
+
+
                 //head from memory becomes new focus
                 focus.push(memoryStack.pop());
 
@@ -162,7 +180,7 @@ public class Parser {
             System.out.println();
             loopcount++;
         }
-        System.out.println("Failed????");
-        return null;
+        System.out.println("Input Parsed!");
+        return root;
     }
 }

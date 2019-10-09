@@ -57,7 +57,8 @@ public class Scanner {
 
     //List of all available REGEX
     public Set<TokenInfo> terminals;
-    private Queue<Token> tokens;
+    private Deque<Token> tokens;
+    private Stack<Token> token_memory;
 
     /**
      * Initializes the Lists for Tokens and TokenInfos
@@ -65,19 +66,9 @@ public class Scanner {
     private Scanner() {
         this.terminals = new HashSet<>();
         this.tokens = new ArrayDeque<>();
+        this.token_memory = new Stack<>();
         build_terminals();
     }
-
-    /*
-    public void add(Terminal terminal)
-    {
-        terminals.add(
-                new TokenInfo(
-                        terminal
-                )
-        );
-    }
-    */
 
     /**
      * Automatically goes through Terminal ENUM and build the set for it (eventually will read from file)
@@ -125,8 +116,9 @@ public class Scanner {
                 }
             }
 
-            if (!match)
+            if (!match){
                 throw new ScannerException("Unexpected Character in: ->" + matcher_input_str);
+            }
         }
 
         tokens.add(new Token(Terminal.eof, ""));
@@ -147,7 +139,13 @@ public class Scanner {
      * @return the next token since the last scan (FIFO)
      */
     public Token nextToken(){
-        return tokens.remove();
+        Token token = tokens.remove();
+        token_memory.push(new Token(token));
+        return token;
+    }
+
+    public void restore_token(){
+        tokens.addFirst(token_memory.pop());
     }
 
     private void dropIgnoredTokens(List<Terminal> terminals){

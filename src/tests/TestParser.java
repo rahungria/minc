@@ -14,10 +14,11 @@ public class TestParser {
         try {
             System.out.println("Scaning...");
 
-            scanner.scan("1 + 2;");
+            scanner.scan("1 + + 2;");
 
         } catch (ScannerException e) {
             e.printStackTrace();
+            System.exit(-1);
         }
         System.out.println("Scan Complete!");
         System.out.println("Compiling Grammar...");

@@ -3,8 +3,8 @@ package parser;
 import exceptions.GrammarCompilerNotInstanciatedException;
 import language.GrammarCompiler;
 
-import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 public class RuleStack {
@@ -54,7 +54,7 @@ public class RuleStack {
 //    }
 
     private Stack<RuleStackNode> stack;
-    private Hashtable<String, List<List<String>>> non_terminal_rules;
+    private Map<String, List<List<String>>> non_terminal_rules;
 
     protected RuleStack(String start_element){
         try {

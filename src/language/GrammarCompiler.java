@@ -39,7 +39,7 @@ public class GrammarCompiler {
     /**
      * Hashtable matching each non-terminal with a list of stacks of
      */
-    private Hashtable<String, List<List<String>>> non_terminal_rules;
+    private Map<String, List<List<String>>> non_terminal_rules;
     private Set<String> non_terminals;
 
     /**
@@ -148,9 +148,9 @@ public class GrammarCompiler {
     //VALIDATE GRAMMAR / EVERY NON-TERMINAL AFTER BUILDING!! (WIP)
 
     public final Set<String> getNon_terminals() {
-        return non_terminals;
+        return Collections.unmodifiableSet(non_terminals);
     }
-    public final Hashtable<String, List<List<String>>> getNon_terminal_rules() {
+    public final Map<String, List<List<String>>> getNon_terminal_rules() {
         return Collections.unmodifiableMap(non_terminal_rules);
     }
 
